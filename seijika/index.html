@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: https://ogp.me/ns#">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ══ 基本SEO ══ -->
+<title>政治家マップ — 国会議員の発言検索 — 国会議員の発言・政策をリアルタイム検索</title>
+<meta name="description" content="政治家マップは、国会議員の発言を国会会議録（国立国会図書館）から検索できる無料サービスです。石破茂・岸田文雄など全議員の発言を「増税」「防衛費」などキーワードで横断検索。一貫性スコア・ワードクラウドで政治家の主張を可視化します。">
+<meta name="keywords" content="政治家,発言,国会,議員,検索,石破茂,岸田文雄,野田佳彦,防衛費,増税,少子化,国会会議録,政策,参議院,衆議院,自民党,立憲民主党,維新,公明党,国民民主党,共産党,政治,日本,選挙">
+<meta name="author" content="政治家マップ運営">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://YOUR-USERNAME.github.io/seijika-map/">
+
+<!-- ══ OGP（SNSシェア用） ══ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="政治家マップ">
+<meta property="og:title" content="政治家マップ — 国会議員の発言をリアルタイム検索">
+<meta property="og:description" content="国会議員の発言を国会会議録からキーワード検索。一貫性スコア・ワードクラウドで政治家の主張を中立的に可視化する無料サービスです。">
+<meta property="og:url" content="https://YOUR-USERNAME.github.io/seijika-map/">
+<meta property="og:image" content="https://YOUR-USERNAME.github.io/seijika-map/ogp.png">
+<meta property="og:locale" content="ja_JP">
+
+<!-- ══ Twitter Card ══ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="政治家マップ — 国会議員の発言をリアルタイム検索">
+<meta name="twitter:description" content="国会議員の発言をキーワードで横断検索。中立・一次ソースのみの政治情報サービス。">
+<meta name="twitter:image" content="https://YOUR-USERNAME.github.io/seijika-map/ogp.png">
+
+<!-- ══ 構造化データ（JSON-LD） ══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "政治家マップ",
+  "url": "https://YOUR-USERNAME.github.io/seijika-map/",
+  "description": "国会議員の発言を国会会議録からキーワード検索できる無料Webサービス。政治家の発言・政策・一貫性を中立的に可視化します。",
+  "applicationCategory": "NewsApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  },
+  "inLanguage": "ja",
+  "keywords": "政治家,発言,国会議員,検索,国会会議録,政策",
+  "creator": {
+    "@type": "Organization",
+    "name": "政治家マップ運営"
+  },
+  "featureList": [
+    "国会議員の発言をキーワード検索",
+    "発言者名（苗字のみ）で検索",
+    "一貫性スコアの表示",
+    "ワードクラウドによる発言傾向可視化",
+    "国会会議録への直接リンク",
+    "自動更新機能"
+  ]
+}
+</script>
+
+<!-- ══ ファビコン ══ -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- ══ Google Search Console 確認タグ（取得後に差し替え） ══ -->
+<!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE"> -->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg:#0d0d0f; --surface:#141418; --surface2:#1c1c22;
+  --border:#2a2a35; --accent:#c8a96e; --accent2:#7eb8c9;
+  --text:#e8e6e0; --muted:#7a7870;
+  --red:#c94f4f; --green:#5ea87a; --yellow:#c9a14f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:baseline;gap:8px}
+.logo-ja{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--accent);letter-spacing:.1em}
+.logo-en{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em}
+.api-pill{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace}
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.api-dot.loading{background:var(--yellow);animation:pulse 1s infinite}
+.api-dot.error{background:var(--red);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── PARTY BAR ── */
+.party-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.party-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;margin-right:4px}
+.chip{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);font-size:11px;color:var(--muted);cursor:pointer;transition:all .18s;user-select:none;white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--text)}
+.chip.active{color:#fff;border-color:transparent;font-weight:500}
+.pdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── SEARCH ── */
+.search-area{background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 20px}
+.mode-tabs{display:flex;margin-bottom:8px}
+.mode-tab{flex:1;padding:6px;text-align:center;font-size:11px;color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all .18s;user-select:none}
+.mode-tab:first-child{border-radius:4px 0 0 4px}
+.mode-tab:last-child{border-radius:0 4px 4px 0;border-left:none}
+.mode-tab.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.search-row{display:flex;gap:8px;align-items:center}
+.inp-wrap{flex:1;position:relative}
+.inp-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 12px 9px 36px;font-family:'Noto Sans JP',sans-serif;font-size:13px;border-radius:4px;outline:none;transition:border-color .2s}
+.inp-wrap input:focus{border-color:var(--accent)}
+.inp-wrap input::placeholder{color:var(--muted)}
+.inp-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none}
+.search-hint{font-size:10px;color:var(--muted);margin-top:5px}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:9px 18px;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:600;border-radius:4px;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.btn:hover{opacity:.84}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.sub-row{display:flex;gap:8px;margin-top:6px}
+
+/* ── MAIN 3-COL ── */
+.main{display:grid;grid-template-columns:240px 1fr 280px;height:calc(100vh - 180px)}
+@media(max-width:900px){.main{grid-template-columns:1fr}.sidebar-l,.sidebar-r{display:none}}
+
+/* ── LEFT ── */
+.sidebar-l{border-right:1px solid var(--border);overflow-y:auto}
+.sec-label{padding:10px 14px 5px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase}
+.pol-item{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(42,42,53,.5);border-left:2px solid transparent;transition:background .15s,border-color .15s}
+.pol-item:hover{background:var(--surface2)}
+.pol-item.active{background:var(--surface2);border-left-color:var(--accent)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:13px;flex-shrink:0}
+.pol-name{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pol-meta{display:flex;align-items:center;gap:4px;margin-top:2px}
+.pol-party{font-size:10px;color:var(--muted)}
+
+/* ── CENTER ── */
+.center{overflow-y:auto;border-right:1px solid var(--border)}
+.pol-header{padding:22px 22px 16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--surface) 0%,transparent 100%)}
+.ph-top{display:flex;align-items:flex-start;gap:16px}
+.av-lg{width:60px;height:60px;border-radius:50%;background:var(--surface2);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:20px;flex-shrink:0}
+.ph-name{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;letter-spacing:.05em}
+.ph-role{font-size:11px;color:var(--muted);margin-top:4px}
+.ph-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:10px;padding:2px 9px;border-radius:20px}
+.tag.a{border-color:var(--accent);color:var(--accent)}
+.scores{display:flex;gap:10px;margin-top:16px}
+.sc{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:11px;text-align:center}
+.sc-val{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;line-height:1}
+.sc-val.g{color:var(--green)}.sc-val.m{color:var(--accent)}.sc-val.r{color:var(--red)}.sc-val.b{color:var(--accent2)}
+.sc-name{font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:.06em}
+
+.q-section{padding:16px 22px}
+.q-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.q-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.q-count{color:var(--accent)}
+
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:9px;position:relative;transition:border-color .2s;animation:fadeIn .3s ease both}
+.qcard:hover{border-color:rgba(200,169,110,.35)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.q-mark{font-family:'Noto Serif JP',serif;font-size:26px;color:var(--accent);opacity:.22;line-height:1;position:absolute;top:9px;left:12px}
+.q-speaker-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.q-spk-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.q-spk-name{font-family:'Noto Serif JP',serif;font-size:12px;font-weight:600}
+.q-spk-grp{font-size:10px;color:var(--muted)}
+.q-text{font-family:'Noto Serif JP',serif;font-size:13px;line-height:1.85;color:var(--text)}
+.q-meeting{font-size:9px;color:var(--muted);margin-top:5px}
+.kw-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.kw{background:rgba(126,184,201,.1);border:1px solid rgba(126,184,201,.2);color:var(--accent2);font-size:9px;padding:2px 6px;border-radius:3px}
+.hl{background:rgba(200,169,110,.25);color:var(--accent);font-weight:700;border-radius:2px;padding:0 1px}
+.q-footer{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding-top:8px;border-top:1px solid var(--border)}
+.q-date{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted)}
+.q-link{font-size:10px;color:var(--accent2);text-decoration:none}
+.q-link:hover{opacity:.7}
+
+/* pagination */
+.pages{display:flex;justify-content:center;gap:6px;padding:14px 0 22px}
+.pg{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:5px 12px;font-size:11px;border-radius:3px;cursor:pointer;transition:all .18s}
+.pg:hover{border-color:var(--accent);color:var(--accent)}
+.pg.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.pg:disabled{opacity:.3;cursor:not-allowed}
+
+/* state boxes */
+.state{padding:50px 20px;text-align:center}
+.state-icon{font-size:38px;margin-bottom:12px;opacity:.45}
+.state-txt{font-size:13px;color:var(--muted);line-height:1.8}
+.spinner{display:inline-block;width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── RIGHT ── */
+.sidebar-r{overflow-y:auto;padding:14px 12px}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:13px;margin-bottom:11px}
+.w-title{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:11px}
+.wcloud{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:50px}
+.wc-word{font-family:'Noto Serif JP',serif;font-weight:600;color:var(--accent);cursor:default;transition:opacity .2s;line-height:1.3}
+.wc-word:hover{opacity:.5}
+.wc-dim{color:var(--muted);font-weight:400}
+.bar-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.bar-lbl{font-size:10px;color:var(--muted);width:62px;flex-shrink:0}
+.bar-bg{flex:1;height:4px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1.1s ease}
+.bar-val{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);width:24px;text-align:right}
+.ring-wrap{text-align:center;padding:6px 0}
+.ring{width:74px;height:74px;border-radius:50%;margin:0 auto 7px;position:relative;display:flex;align-items:center;justify-content:center}
+.ring-inner{position:relative;z-index:1;background:var(--surface);width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ring-num{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:var(--text)}
+.ring-lbl{font-size:10px;color:var(--muted)}
+.gap-item{font-size:10px;color:var(--muted);line-height:1.7;padding:5px 0;border-top:1px solid var(--border)}
+.gap-item:first-child{border-top:none}
+
+/* ── CANDIDATE MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:420px;max-width:95vw;max-height:80vh;overflow-y:auto;padding:24px;position:relative}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer}
+.modal-title{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:var(--accent);margin-bottom:14px}
+.cand-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:6px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:background .15s}
+.cand-item:hover{background:var(--surface2)}
+
+/* ── DISCLAIMER MODAL ── */
+.disc-modal{width:600px;max-width:96vw;max-height:88vh}
+.disc-modal h3{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;color:var(--accent);margin:18px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.disc-modal h3:first-of-type{margin-top:0}
+.disc-modal p,.disc-modal li{font-size:11px;color:var(--muted);line-height:1.9}
+.disc-modal ul{padding-left:16px;margin-top:4px}
+.disc-modal a{color:var(--accent2)}
+
+/* ── AUTO-REFRESH BAR ── */
+.refresh-bar{display:flex;align-items:center;gap:10px;padding:5px 20px;background:var(--surface);border-bottom:1px solid var(--border);font-size:10px;color:var(--muted)}
+.refresh-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.toggle-track{width:32px;height:17px;border-radius:20px;background:var(--border);position:relative;transition:background .2s;flex-shrink:0}
+.toggle-track.on{background:var(--green)}
+.toggle-thumb{width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s}
+.toggle-track.on .toggle-thumb{left:17px}
+.refresh-countdown{font-family:'Space Mono',monospace;color:var(--accent);min-width:28px}
+.refresh-sep{width:1px;height:14px;background:var(--border)}
+.disc-link{color:var(--accent2);cursor:pointer;text-decoration:underline;font-size:10px;margin-left:auto}
+
+/* ── CONSENT BANNER ── */
+.consent-banner{position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--surface2);border-top:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.consent-banner.hidden{display:none}
+.consent-txt{flex:1;font-size:11px;color:var(--muted);line-height:1.7;min-width:200px}
+.consent-txt a{color:var(--accent2)}
+.consent-btns{display:flex;gap:8px;flex-shrink:0}
+.btn-sm{padding:7px 16px;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer;border:none;transition:opacity .2s}
+.btn-accept{background:var(--accent);color:var(--bg)}
+.btn-reject{background:var(--surface);color:var(--muted);border:1px solid var(--border)!important}
+.btn-sm:hover{opacity:.82}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <span class="logo-ja">政治家マップ</span>
+    <span class="logo-en">SEIJIKA MAP</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px">
+    <nav style="display:flex;gap:16px">
+      <a href="about.html" style="font-size:11px;color:var(--muted);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">サービスについて</a>
+      <a href="privacy.html" style="font-size:11px;color:var(--muted);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">プライバシー</a>
+    </nav>
+    <div class="api-pill">
+      <div class="api-dot" id="apiDot"></div>
+      <span id="apiTxt">国会会議録API</span>
+    </div>
+  </div>
+</header>
+
+<!-- PARTY FILTER -->
+<div class="party-bar">
+  <span class="party-label">PARTY</span>
+  <div class="chip active" onclick="filterParty(this,'all')"><span>すべて</span></div>
+  <div class="chip" onclick="filterParty(this,'自由民主党')"><span class="pdot" style="background:#e05050"></span>自民党</div>
+  <div class="chip" onclick="filterParty(this,'立憲民主党')"><span class="pdot" style="background:#4f7fc9"></span>立憲</div>
+  <div class="chip" onclick="filterParty(this,'日本維新の会')"><span class="pdot" style="background:#c9a14f"></span>維新</div>
+  <div class="chip" onclick="filterParty(this,'公明党')"><span class="pdot" style="background:#5ea87a"></span>公明</div>
+  <div class="chip" onclick="filterParty(this,'国民民主党')"><span class="pdot" style="background:#7eb8c9"></span>国民</div>
+  <div class="chip" onclick="filterParty(this,'日本共産党')"><span class="pdot" style="background:#c94f4f"></span>共産</div>
+</div>
+
+<!-- AUTO-REFRESH BAR -->
+<div class="refresh-bar">
+  <div class="refresh-toggle" onclick="toggleAutoRefresh()">
+    <div class="toggle-track" id="toggleTrack"><div class="toggle-thumb"></div></div>
+    <span>自動更新</span>
+  </div>
+  <span id="refreshCountdown" class="refresh-countdown" style="display:none"></span>
+  <div class="refresh-sep"></div>
+  <span id="lastUpdated">最終更新: —</span>
+  <span class="disc-link" onclick="openDisc()">免責事項・プライバシーポリシー</span>
+</div>
+
+<!-- SEARCH -->
+<div class="search-area">
+  <div class="mode-tabs">
+    <div class="mode-tab active" id="tabName" onclick="setMode('name')">👤 発言者名</div>
+    <div class="mode-tab" id="tabKw" onclick="setMode('keyword')">💬 発言内容</div>
+  </div>
+  <div class="search-row">
+    <div class="inp-wrap" id="nameWrap">
+      <span class="inp-icon">🔍</span>
+      <input id="nameInp" placeholder="例：石破　または　石破　茂" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <div class="inp-wrap" id="kwWrap" style="display:none">
+      <span class="inp-icon">💬</span>
+      <input id="kwInp" placeholder="例：増税　防衛費　少子化対策" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <button class="btn" id="searchBtn" onclick="doSearch()">検索</button>
+  </div>
+  <div class="sub-row" id="kwSubRow" style="display:none">
+    <div class="inp-wrap">
+      <span class="inp-icon">👤</span>
+      <input id="kwSpkInp" placeholder="発言者で絞る（任意）" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+  </div>
+  <div class="search-hint" id="hint">苗字だけでもOK。同姓の議員が複数いれば一覧から選べます</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- LEFT -->
+  <div class="sidebar-l">
+    <div class="sec-label">注目の政治家</div>
+    <div id="polList"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center" id="center">
+    <div class="state">
+      <div class="state-icon">🏛</div>
+      <div class="state-txt">
+        政治家名かキーワードを入力して検索してください<br><br>
+        <small style="font-size:10px">データソース：国立国会図書館 国会会議録検索システム API<br>著作権法第13条に基づき国会発言は著作権の保護対象外</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="sidebar-r" id="rightPanel">
+    <div class="widget">
+      <div class="w-title">使い方</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.9">
+        1. 発言者名 or キーワードで検索<br>
+        2. 国会会議録から発言を自動取得<br>
+        3. ワードクラウド・スコアを確認<br>
+        4. 発言元の国会会議録へリンク
+      </div>
+    </div>
+    <div class="widget">
+      <div class="w-title">一貫性スコアとは</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.8">
+        取得した発言のキーワード頻度と<br>トピックの一貫性から算出。<br><br>
+        高い = 主張が一貫している<br>低い = 立場の変化が多い
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CANDIDATE MODAL -->
+<div class="overlay" id="candModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('candModal').classList.remove('open')">✕</button>
+    <div class="modal-title" id="candTitle"></div>
+    <div id="candList"></div>
+  </div>
+</div>
+
+<!-- DISCLAIMER MODAL -->
+<div class="overlay" id="discModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal disc-modal">
+    <button class="modal-close" onclick="document.getElementById('discModal').classList.remove('open')">✕</button>
+    <div class="modal-title">免責事項・プライバシーポリシー</div>
+
+    <h3>1. 広告について</h3>
+    <p>当アプリ（およびサイト）では、第三者配信による広告サービス「Google AdMob」「Google AdSense」を利用しています。</p>
+    <ul>
+      <li><b>パーソナライズ広告：</b>広告配信事業者は、ユーザーの興味に応じた広告を表示するために、当サービスや他サイトへのアクセス情報（Cookie、ADID等）を使用することがあります。</li>
+      <li><b>情報の管理：</b>ユーザーは、<a href="https://adssettings.google.com/" target="_blank">Googleの広告設定</a>からパーソナライズ広告を無効にすることができます。</li>
+    </ul>
+
+    <h3>2. 政治的中立性と情報の出典について（※最重要）</h3>
+    <p>当サービスは、特定の政治的主張を支持・宣伝することを目的としたものではありません。</p>
+    <ul>
+      <li><b>情報のソース：</b>本サービスで掲載している政治家の発言、採決結果、公約等のデータは、以下の一次情報および公的記録に基づき抽出・整理されています。
+        <ul>
+          <li>国会会議録検索システム（国立国会図書館）</li>
+          <li>各政党および政府機関の公式サイト・公式声明</li>
+          <li>信頼性の高い報道機関によるニュース記事（出典元を併記）</li>
+        </ul>
+      </li>
+      <li><b>正確性の担保：</b>データの抽出・整理にあたっては、AIおよびスタッフによる検証を行い、恣意的な改変や事実誤認の排除に努めています。</li>
+    </ul>
+
+    <h3>3. 免責事項（非政府組織の明示）</h3>
+    <p>当サービスは、日本の政府機関、政党、または公的機関とは一切関係のない、独立した個人の開発による民間サービスです。</p>
+    <ul>
+      <li><b>公的な代表性の否定：</b>本サービスが提供する情報は、公式な政府見解を代表するものではありません。</li>
+      <li><b>損害への責任：</b>本サービスの情報を用いて行われた判断、行動によって生じた損害について、運営者は一切の責任を負いかねます。最新かつ正確な情報は、必ず各公式サイト等の一次情報をご確認ください。</li>
+    </ul>
+
+    <h3>4. ユーザーのプライバシーとデータ収集</h3>
+    <p>2026年時点の最新のプライバシー規制（IAB TCF v2.3等）に準拠し、ユーザーからの明示的な同意を得た上で、アプリの利便性向上および統計的な分析のためにのみデータを利用します。</p>
+    <ul>
+      <li><b>収集するデータ：</b>閲覧履歴、検索ワード、端末情報。</li>
+      <li><b>利用目的：</b>コンテンツのパーソナライズ、利用状況の分析、広告の最適化。</li>
+    </ul>
+
+    <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);text-align:right">
+      <button class="btn" onclick="document.getElementById('discModal').classList.remove('open')" style="font-size:12px;padding:8px 20px">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONSENT BANNER -->
+<div class="consent-banner" id="consentBanner">
+  <div class="consent-txt">
+    当サービスでは、利便性向上・広告最適化のためCookieおよび類似技術を使用します。
+    Google AdSense/AdMobによるパーソナライズ広告を含みます。
+    詳細は<span class="disc-link" onclick="openDisc()" style="margin-left:2px">免責事項・プライバシーポリシー</span>をご確認ください。
+  </div>
+  <div class="consent-btns">
+    <button class="btn-sm btn-reject" onclick="rejectConsent()">必要最小限のみ</button>
+    <button class="btn-sm btn-accept" onclick="acceptConsent()">同意して続ける</button>
+  </div>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONFIG
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const NDL = 'https://kokkai.ndl.go.jp/api/speech';
+const PER_PAGE = 10;
+
+// CORSプロキシ（順番に試してフォールバック）
+const PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://cors-anywhere.herokuapp.com/${url}`,
+];
+
+const PARTY_COLORS = {
+  '自由民主党':'#e05050','自民党':'#e05050',
+  '立憲民主党':'#4f7fc9','立憲':'#4f7fc9',
+  '日本維新の会':'#c9a14f','維新':'#c9a14f',
+  '公明党':'#5ea87a','国民民主党':'#7eb8c9',
+  '日本共産党':'#c94f4f','れいわ新選組':'#b07ec9',
+  '無所属':'#7a7870',
+};
+function partyColor(p=''){
+  for(const[k,v]of Object.entries(PARTY_COLORS))if(p.includes(k))return v;
+  return '#7a7870';
+}
+
+const PRESETS = [
+  {name:'石破　茂',   party:'自由民主党', role:'内閣総理大臣'},
+  {name:'岸田　文雄', party:'自由民主党', role:'前内閣総理大臣'},
+  {name:'野田　佳彦', party:'立憲民主党', role:'立憲民主党代表'},
+  {name:'玉木　雄一郎',party:'国民民主党',role:'国民民主党代表'},
+  {name:'吉村　洋文', party:'日本維新の会',role:'日本維新の会代表'},
+  {name:'河野　太郎', party:'自由民主党', role:'衆議院議員'},
+  {name:'山口　那津男',party:'公明党',    role:'公明党代表'},
+  {name:'田村　智子', party:'日本共産党', role:'日本共産党委員長'},
+];
+
+const KWS = ['増税','防衛','少子化','原発','経済','財政','外交','教育','賃金','デジタル','エネルギー','子育て','医療','年金','憲法','安全保障','賃上げ','規制緩和','農業','地方創生'];
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let mode = 'name';
+let curSpeaker = '';
+let curKeyword = '';
+let curPage = 1;
+let totalRecs = 0;
+let partyFilter = 'all';
+let proxyIdx = 0; // 現在使用中のプロキシ
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+renderPresets();
+setApiStatus('ready');
+
+function renderPresets(){
+  const list = document.getElementById('polList');
+  const filtered = partyFilter === 'all'
+    ? PRESETS
+    : PRESETS.filter(p => p.party.includes(partyFilter));
+
+  list.innerHTML = filtered.map(p => {
+    const c = partyColor(p.party);
+    const ch = p.name.replace(/[　\s]/g,'')[0]||'?';
+    const active = curSpeaker === p.name ? 'active' : '';
+    return `<div class="pol-item ${active}" onclick="pickPreset('${p.name}')">
+      <div class="av" style="border-color:${c};color:${c}">${ch}</div>
+      <div style="flex:1;min-width:0">
+        <div class="pol-name">${p.name}</div>
+        <div class="pol-meta">
+          <div class="pdot" style="background:${c}"></div>
+          <span class="pol-party">${p.party}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pickPreset(name){
+  document.getElementById('nameInp').value = name;
+  setMode('name');
+  searchByName(name);
+}
+
+function filterParty(el, party){
+  document.querySelectorAll('.chip').forEach(c=>{c.classList.remove('active');c.style.background='';c.style.color='';});
+  el.classList.add('active');
+  const c = party==='all' ? 'var(--accent)' : partyColor(party);
+  el.style.background = c;
+  el.style.color = party==='all' ? 'var(--bg)' : '#fff';
+  partyFilter = party;
+  renderPresets();
+}
+
+function setMode(m){
+  mode = m;
+  document.getElementById('tabName').classList.toggle('active', m==='name');
+  document.getElementById('tabKw').classList.toggle('active', m==='keyword');
+  document.getElementById('nameWrap').style.display = m==='name' ? '' : 'none';
+  document.getElementById('kwWrap').style.display = m==='keyword' ? '' : 'none';
+  document.getElementById('kwSubRow').style.display = m==='keyword' ? '' : 'none';
+  document.getElementById('hint').textContent = m==='name'
+    ? '苗字だけでもOK。同姓の議員が複数いれば一覧から選べます'
+    : 'スペース区切りで複数キーワード指定可。発言者絞り込みも可能';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// API FETCH（プロキシフォールバック付き）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function ndlFetch(params){
+  const qs = new URLSearchParams({...params, recordPacking:'json'}).toString();
+  const directUrl = `${NDL}?${qs}`;
+
+  // まず直接アクセスを試みる
+  try {
+    const r = await fetch(directUrl, {signal: AbortSignal.timeout(6000)});
+    if(r.ok){ const d = await r.json(); return d; }
+  } catch(_){}
+
+  // CORSプロキシを順番に試す
+  for(let i = 0; i < PROXIES.length; i++){
+    const idx = (proxyIdx + i) % PROXIES.length;
+    try {
+      const proxyUrl = PROXIES[idx](directUrl);
+      const r = await fetch(proxyUrl, {signal: AbortSignal.timeout(10000)});
+      if(r.ok){
+        const d = await r.json();
+        proxyIdx = idx; // 成功したプロキシを記憶
+        return d;
+      }
+    } catch(_){}
+  }
+  throw new Error('APIに接続できません。しばらく待ってから再試行してください。');
+}
+
+function setApiStatus(s, msg){
+  const dot = document.getElementById('apiDot');
+  const txt = document.getElementById('apiTxt');
+  if(s==='ready'){dot.className='api-dot';txt.textContent='国会会議録API 接続済み';}
+  else if(s==='loading'){dot.className='api-dot loading';txt.textContent=msg||'取得中...';}
+  else if(s==='error'){dot.className='api-dot error';txt.textContent=msg||'エラー';}
+  else if(s==='done'){dot.className='api-dot';txt.textContent=msg||'取得完了';}
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SEARCH
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function doSearch(){
+  if(mode==='keyword'){ doKeywordSearch(); return; }
+
+  const raw = document.getElementById('nameInp').value.trim();
+  if(!raw) return;
+
+  // 苗字のみ（スペースなし・3文字以下）→ 候補取得
+  if(!/[　\s]/.test(raw) && raw.length <= 3){
+    setApiStatus('loading', `「${raw}」の候補を検索中...`);
+    showLoading(`「${raw}」の候補を検索中...`);
+    try {
+      const data = await ndlFetch({speaker:raw, maximumRecords:100, startRecord:1});
+      const recs = data.speechRecord ?? [];
+      if(!recs.length){ showEmpty(raw); setApiStatus('done','該当なし'); return; }
+
+      const seen = new Set(), cands = [];
+      recs.forEach(r => {
+        if(r.speaker && !seen.has(r.speaker)){
+          seen.add(r.speaker);
+          cands.push({name:r.speaker, group:r.speakerGroup||'', pos:r.speakerPosition||''});
+        }
+      });
+
+      if(cands.length===1){ searchByName(cands[0].name); return; }
+      showCandidates(raw, cands);
+      setApiStatus('done', `「${raw}」— ${cands.length}名`);
+    } catch(e){ showError(e.message); setApiStatus('error','取得失敗'); }
+    return;
+  }
+
+  searchByName(raw);
+}
+
+async function searchByName(name, page=1){
+  curSpeaker = name; curPage = page;
+  renderPresets();
+  showLoading(`「${name}」の発言を取得中...`);
+  setApiStatus('loading', `「${name}」取得中...`);
+  try {
+    const data = await ndlFetch({
+      speaker: name,
+      maximumRecords: PER_PAGE,
+      startRecord: (page-1)*PER_PAGE+1,
+    });
+    totalRecs = Number(data.numberOfRecords)||0;
+    const recs = normalize(data.speechRecord??[]);
+    renderCenter(name, recs, totalRecs, null);
+    renderRight(name, recs);
+    updateLastUpdated();
+    setApiStatus('done', `「${name}」— ${totalRecs.toLocaleString()}件`);
+  } catch(e){ showError(e.message); setApiStatus('error','取得失敗'); }
+}
+
+async function doKeywordSearch(page=1){
+  const kw = document.getElementById('kwInp').value.trim();
+  const spk = document.getElementById('kwSpkInp').value.trim();
+  if(!kw){ alert('キーワードを入力してください'); return; }
+  curKeyword=kw; curSpeaker=spk; curPage=page;
+
+  const label = spk ? `「${kw}」×「${spk}」` : `「${kw}」`;
+  showLoading(`${label} を検索中...`);
+  setApiStatus('loading', `${label} 検索中...`);
+  try {
+    const params = {any:kw, maximumRecords:PER_PAGE, startRecord:(page-1)*PER_PAGE+1};
+    if(spk) params.speaker = spk;
+    const data = await ndlFetch(params);
+    totalRecs = Number(data.numberOfRecords)||0;
+    const recs = normalize(data.speechRecord??[]);
+    renderCenter(spk||'キーワード検索', recs, totalRecs, kw);
+    renderRight(spk||kw, recs);
+    updateLastUpdated();
+    setApiStatus('done', `${label} — ${totalRecs.toLocaleString()}件`);
+  } catch(e){ showError(e.message); setApiStatus('error','取得失敗'); }
+}
+
+async function loadPage(p){
+  if(mode==='keyword'){ doKeywordSearch(p); return; }
+  searchByName(curSpeaker, p);
+  document.querySelector('.center').scrollTo({top:0,behavior:'smooth'});
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function normalize(recs){
+  return recs.map(r => ({
+    speechID:        r.speechID||'',
+    speechURL:       r.speechURL||'',
+    speaker:         r.speaker||'',
+    speakerGroup:    r.speakerGroup||'',
+    speakerPosition: r.speakerPosition||'',
+    date:            r.date||'',
+    nameOfHouse:     r.nameOfHouse||'',
+    nameOfMeeting:   r.nameOfMeeting||'',
+    speech: (r.speech||'').replace(/^○[^\s]*\s*/gm,'').replace(/^議長\s*/m,'').replace(/\s+/g,' ').trim(),
+  }));
+}
+
+function renderCenter(speaker, recs, total, keyword){
+  const party = recs[0]?.speakerGroup||'';
+  const role  = recs[0]?.speakerPosition||'';
+  const pc = partyColor(party);
+  const ch = speaker.replace(/[　\s]/g,'')[0]||'?';
+  const sc = calcScores(recs);
+  const isKw = !!keyword;
+  const pageStart = (curPage-1)*PER_PAGE+1;
+  const pageEnd   = Math.min(curPage*PER_PAGE, total);
+
+  let html = `
+  <div class="pol-header">
+    <div class="ph-top">
+      <div class="av-lg" style="border-color:${isKw?'var(--accent2)':pc};color:${isKw?'var(--accent2)':pc}">
+        ${isKw?'💬':ch}
+      </div>
+      <div style="flex:1">
+        <div class="ph-name">${isKw?'発言内容検索':esc(speaker)}</div>
+        <div class="ph-role">${isKw?'キーワード：'+esc(keyword)+(curSpeaker?' / 発言者：'+esc(curSpeaker):''):esc(role)||'国会議員'}</div>
+        <div class="ph-tags">
+          <span class="tag a" style="border-color:${isKw?'var(--accent2)':pc};color:${isKw?'var(--accent2)':pc}">${isKw?'全議員横断':party||'会派不明'}</span>
+          <span class="tag">総発言数 ${total.toLocaleString()}件</span>
+        </div>
+      </div>
+    </div>
+    ${isKw ? '' : `
+    <div class="scores">
+      <div class="sc"><div class="sc-val ${scClass(sc.consistency)}">${sc.consistency}</div><div class="sc-name">一貫性</div></div>
+      <div class="sc"><div class="sc-val b">${sc.frequency}</div><div class="sc-name">発言頻度</div></div>
+      <div class="sc"><div class="sc-val ${scClass(sc.diversity)}">${sc.diversity}</div><div class="sc-name">多様性</div></div>
+      <div class="sc"><div class="sc-val b">${total.toLocaleString()}</div><div class="sc-name">総発言数</div></div>
+    </div>`}
+  </div>
+  <div class="q-section">
+    <div class="q-title">
+      ${isKw?'検索結果':'国会発言一覧'}
+      <span class="q-count">（${total.toLocaleString()}件中 ${pageStart}〜${pageEnd}件）</span>
+    </div>`;
+
+  if(!recs.length){
+    html += `<div class="state"><div class="state-icon">🔍</div><div class="state-txt">発言が見つかりませんでした</div></div>`;
+  }
+
+  recs.forEach((r,i)=>{
+    if(!r.speech || r.speech.length<5) return;
+    const preview = r.speech.slice(0,300)+(r.speech.length>300?'…':'');
+    const displayText = keyword ? highlight(esc(preview), keyword) : esc(preview);
+    const kws = KWS.filter(k=>r.speech.includes(k)).slice(0,4);
+    const pc2 = partyColor(r.speakerGroup);
+    const delay = i*0.04;
+
+    html += `
+    <div class="qcard" style="animation-delay:${delay}s">
+      <div class="q-mark">"</div>
+      ${isKw ? `<div class="q-speaker-row">
+        <div class="q-spk-dot" style="background:${pc2}"></div>
+        <span class="q-spk-name">${esc(r.speaker)}</span>
+        <span class="q-spk-grp">${esc(r.speakerGroup)}</span>
+      </div>` : ''}
+      <div class="q-text">${displayText}</div>
+      <div class="q-meeting">${esc(r.nameOfHouse)} ${esc(r.nameOfMeeting)}</div>
+      ${kws.length ? `<div class="kw-row">${kws.map(k=>`<span class="kw">${k}</span>`).join('')}</div>` : ''}
+      <div class="q-footer">
+        <span class="q-date">${fmtDate(r.date)}</span>
+        ${r.speechURL ? `<a href="${r.speechURL}" target="_blank" class="q-link">国会会議録 ↗</a>` : ''}
+      </div>
+    </div>`;
+  });
+
+  html += `</div>`;
+
+  // ページネーション
+  const totalPages = Math.min(Math.ceil(total/PER_PAGE), 50);
+  if(totalPages > 1){
+    html += `<div class="pages">`;
+    html += `<button class="pg" onclick="loadPage(${curPage-1})" ${curPage===1?'disabled':''}>← 前へ</button>`;
+    const s=Math.max(1,curPage-2), e=Math.min(totalPages,curPage+2);
+    for(let p=s;p<=e;p++) html+=`<button class="pg ${p===curPage?'active':''}" onclick="loadPage(${p})">${p}</button>`;
+    html += `<button class="pg" onclick="loadPage(${curPage+1})" ${curPage>=totalPages?'disabled':''}>次へ →</button>`;
+    html += `</div>`;
+  }
+
+  document.getElementById('center').innerHTML = html;
+}
+
+function renderRight(speaker, recs){
+  const freq = calcWordFreq(recs);
+  const dist  = calcTopicDist(recs);
+  const sc    = calcScores(recs);
+  const gaps  = calcGaps(recs);
+
+  // ワードクラウド
+  const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,16);
+  const maxF = top[0]?.[1]||1;
+  const wcHtml = top.map(([w,f])=>{
+    const sz = 11+Math.round((f/maxF)*13);
+    const dim = f < maxF*.3 ? ' wc-dim' : '';
+    return `<span class="wc-word${dim}" style="font-size:${sz}px" title="${f}回">${w}</span>`;
+  }).join('') || '<span style="font-size:11px;color:var(--muted)">検索後に表示されます</span>';
+
+  // バー
+  const barsHtml = Object.entries(dist).map(([t,p])=>{
+    const c = t==='経済・財政'?'#c8a96e':t==='安全保障'?'#c94f4f':t==='社会保障'?'#7eb8c9':t==='エネルギー'?'#5ea87a':'#9a8a7a';
+    return `<div class="bar-row">
+      <span class="bar-lbl">${t}</span>
+      <div class="bar-bg"><div class="bar-fill" style="width:${p}%;background:${c}"></div></div>
+      <span class="bar-val">${p}%</span>
+    </div>`;
+  }).join('');
+
+  // リングゲージ
+  const pct = sc.consistency;
+  const rc = pct>=70?'#5ea87a':pct>=45?'#c8a96e':'#c94f4f';
+  const deg = pct/100*360;
+
+  document.getElementById('rightPanel').innerHTML = `
+  <div class="widget">
+    <div class="w-title">ワードクラウド — ${esc(speaker)}</div>
+    <div class="wcloud">${wcHtml}</div>
+  </div>
+  <div class="widget">
+    <div class="w-title">トピック分布</div>
+    ${barsHtml || '<div style="font-size:10px;color:var(--muted)">データなし</div>'}
+  </div>
+  <div class="widget">
+    <div class="w-title">一貫性スコア</div>
+    <div class="ring-wrap">
+      <div class="ring" style="background:conic-gradient(${rc} 0deg,${rc} ${deg}deg,var(--surface2) ${deg}deg)">
+        <div class="ring-inner"><span class="ring-num">${pct}</span></div>
+      </div>
+      <div class="ring-lbl">一貫性スコア / 100</div>
+    </div>
+    <div style="margin-top:8px">
+      ${gaps.length
+        ? gaps.map(g=>`<div class="gap-item">⚠ ${g}</div>`).join('')
+        : '<div style="font-size:10px;color:var(--muted)">顕著な乖離は検出されませんでした</div>'}
+    </div>
+  </div>
+  <div class="widget">
+    <div class="w-title">データソース</div>
+    <div style="font-size:10px;color:var(--muted);line-height:1.9">
+      国立国会図書館<br>国会会議録検索システム API<br><br>
+      著作権法第13条により<br>国会発言は著作権の対象外
+    </div>
+  </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CANDIDATE PICKER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showCandidates(surname, cands){
+  document.getElementById('candTitle').textContent = `「${surname}」— ${cands.length}名の議員が見つかりました`;
+  document.getElementById('candList').innerHTML = cands.map(c=>{
+    const col = partyColor(c.group);
+    const ch = c.name.replace(/[　\s]/g,'')[0]||'?';
+    return `<div class="cand-item" onclick="pickCandidate('${c.name.replace(/'/g,"\\'")}')">
+      <div class="av" style="border-color:${col};color:${col};width:34px;height:34px;flex-shrink:0">${ch}</div>
+      <div>
+        <div style="font-family:'Noto Serif JP',serif;font-size:13px;font-weight:600">${c.name}</div>
+        <div style="font-size:10px;color:var(--muted)">${c.group}${c.pos?' / '+c.pos:''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('candModal').classList.add('open');
+}
+
+function pickCandidate(name){
+  document.getElementById('candModal').classList.remove('open');
+  document.getElementById('nameInp').value = name;
+  searchByName(name);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ANALYSIS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function calcWordFreq(recs){
+  const freq={};
+  recs.forEach(r=>{
+    KWS.forEach(k=>{ if(r.speech.includes(k)) freq[k]=(freq[k]||0)+1; });
+  });
+  return freq;
+}
+
+function calcTopicDist(recs){
+  const topics={
+    '経済・財政':['経済','財政','増税','予算','賃金','GDP'],
+    '安全保障':  ['防衛','安全保障','自衛隊','軍'],
+    '社会保障':  ['年金','医療','介護','少子化','子育て'],
+    'エネルギー':['原発','エネルギー','再生可能','脱炭素'],
+    '外交':      ['外交','首脳','G7','国連'],
+  };
+  const cnt={}, total_ref={count:0};
+  recs.forEach(r=>{
+    Object.entries(topics).forEach(([t,ws])=>{
+      ws.forEach(w=>{ if(r.speech.includes(w)){ cnt[t]=(cnt[t]||0)+1; total_ref.count++; } });
+    });
+  });
+  if(!total_ref.count) return {};
+  const res={};
+  Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5).forEach(([t,c])=>{
+    res[t]=Math.round(c/total_ref.count*100);
+  });
+  return res;
+}
+
+function calcScores(recs){
+  if(!recs.length) return {consistency:0,frequency:0,diversity:0};
+  const freq = calcWordFreq(recs);
+  const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  let cons=0;
+  top.forEach(([,c])=>{ if(c/recs.length>0.2) cons++; });
+  const consistency = Math.min(99, Math.round(30+(cons/Math.max(top.length,1))*60));
+  const frequency   = Math.min(99, Math.round(recs.length*8+20));
+  const dist = calcTopicDist(recs);
+  const diversity   = Math.min(99, Math.round(Object.keys(dist).length*18+10));
+  return {consistency,frequency,diversity};
+}
+
+function calcGaps(recs){
+  const all = recs.map(r=>r.speech).join('');
+  const pairs=[
+    ['原発','脱原発','エネルギー政策に関する発言の変化'],
+    ['防衛費','防衛費削減','安全保障費に関する言及の変化'],
+    ['増税','減税','税制スタンスに関する発言の変化'],
+  ];
+  return pairs.filter(([a,b])=>all.includes(a)&&all.includes(b)).map(([,,l])=>l).slice(0,3);
+}
+
+function scClass(v){ return v>=70?'g':v>=45?'m':'r'; }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STATE SCREENS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showLoading(msg){
+  document.getElementById('center').innerHTML = `
+  <div class="state">
+    <div class="spinner"></div>
+    <div class="state-txt">${esc(msg)}<br><small style="font-size:10px">国立国会図書館 国会会議録APIに接続中</small></div>
+  </div>`;
+}
+function showEmpty(q){
+  document.getElementById('center').innerHTML = `
+  <div class="state">
+    <div class="state-icon">🔍</div>
+    <div class="state-txt">「${esc(q)}」の発言が見つかりませんでした。<br>氏名の表記を確認してください。<br><small style="font-size:10px">例：石破　茂（姓と名の間に全角スペース）</small></div>
+  </div>`;
+}
+function showError(msg){
+  document.getElementById('center').innerHTML = `
+  <div class="state">
+    <div class="state-icon">⚠️</div>
+    <div class="state-txt">${esc(msg)}<br><br>
+    <button class="btn" onclick="doSearch()" style="font-size:12px;padding:7px 16px">再試行</button></div>
+  </div>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AUTO-REFRESH
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const REFRESH_INTERVAL = 300; // 5分（秒）
+let autoRefreshOn  = false;
+let refreshTimer   = null;
+let countdownTimer = null;
+let countdownSec   = REFRESH_INTERVAL;
+
+function toggleAutoRefresh(){
+  autoRefreshOn = !autoRefreshOn;
+  const track = document.getElementById('toggleTrack');
+  const cd    = document.getElementById('refreshCountdown');
+  track.classList.toggle('on', autoRefreshOn);
+  if(autoRefreshOn){
+    cd.style.display = '';
+    startCountdown();
+  } else {
+    cd.style.display = 'none';
+    clearTimeout(refreshTimer);
+    clearInterval(countdownTimer);
+  }
+}
+
+function startCountdown(){
+  countdownSec = REFRESH_INTERVAL;
+  updateCountdownUI();
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(()=>{
+    countdownSec--;
+    updateCountdownUI();
+    if(countdownSec <= 0){
+      clearInterval(countdownTimer);
+      doAutoRefresh();
+    }
+  }, 1000);
+}
+
+function updateCountdownUI(){
+  const m = String(Math.floor(countdownSec/60)).padStart(2,'0');
+  const s = String(countdownSec%60).padStart(2,'0');
+  const el = document.getElementById('refreshCountdown');
+  if(el) el.textContent = `${m}:${s}`;
+}
+
+function doAutoRefresh(){
+  if(!autoRefreshOn) return;
+  // 現在表示中の内容を再取得
+  if(mode==='keyword' && curKeyword){
+    doKeywordSearch(curPage);
+  } else if(curSpeaker){
+    searchByName(curSpeaker, curPage);
+  }
+  // 完了後にまたカウントダウン開始
+  setTimeout(()=>{ if(autoRefreshOn) startCountdown(); }, 3000);
+}
+
+function updateLastUpdated(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('lastUpdated');
+  if(el) el.textContent = `最終更新: ${h}:${m}:${s}`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DISCLAIMER & CONSENT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openDisc(){
+  document.getElementById('discModal').classList.add('open');
+}
+
+function acceptConsent(){
+  localStorage.setItem('consent', 'accepted');
+  document.getElementById('consentBanner').classList.add('hidden');
+}
+
+function rejectConsent(){
+  localStorage.setItem('consent', 'rejected');
+  document.getElementById('consentBanner').classList.add('hidden');
+}
+
+function initConsent(){
+  const c = localStorage.getItem('consent');
+  if(c) document.getElementById('consentBanner').classList.add('hidden');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// HELPERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmtDate(d=''){return d?d.slice(0,10).replace(/-/g,'.'):''}
+function highlight(text, kw){
+  const tokens = kw.trim().split(/[\s　]+/).filter(Boolean);
+  let r = text;
+  tokens.forEach(t=>{
+    const e = t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    r = r.replace(new RegExp(e,'g'),`<span class="hl">${t}</span>`);
+  });
+  return r;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// BOOT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+initConsent();
+</script>
+</body>
+</html>
