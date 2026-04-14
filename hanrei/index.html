@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>判例マップ — 最高裁・高裁・地裁の判例をキーワード検索 | まとマップ</title>
+<meta name="description" content="最高裁判所・高等裁判所・地方裁判所の判例をキーワード・事件名・裁判所名・年月日で検索。裁判所公式の裁判例検索システムへ直接リンク。行政・労働・知財・刑事など幅広くカバー。">
+<meta name="keywords" content="判例,判例検索,最高裁,裁判所,判決,事件名,キーワード,行政,労働,知財,刑事,民事">
+<link rel="canonical" href="https://matomap.github.io/hanrei/">
+<meta property="og:title" content="判例マップ — 最高裁・高裁・地裁の判例をキーワード検索">
+<meta property="og:type" content="website">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"判例マップ","url":"https://matomap.github.io/hanrei/","description":"判例をキーワードで検索できる無料サービス","inLanguage":"ja"}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0d0d0f;--surface:#141418;--surface2:#1c1c22;--border:#2a2a35;--accent:#c8a96e;--accent2:#7eb8c9;--text:#e8e6e0;--muted:#7a7870;--green:#5ea87a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh}
+header{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.back{font-size:11px;color:var(--muted);text-decoration:none}.back:hover{color:var(--accent)}
+.logo{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--accent)}
+.hero{background:linear-gradient(135deg,#1a1a14 0%,#0d0d0f 100%);border-bottom:1px solid var(--border);padding:32px 20px}
+h1{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;color:var(--text);margin:10px 0 8px}
+.hero-desc{font-size:13px;color:var(--muted);line-height:1.9;max-width:620px}
+.info-box{background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.2);border-radius:6px;padding:12px 16px;margin-top:14px;font-size:11px;color:var(--muted);line-height:1.8}
+.search-area{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;flex-direction:column;gap:8px}
+.search-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.inp-g{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.inp-label{font-size:10px;color:var(--muted);letter-spacing:.06em}
+select,input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 12px;font-family:'Noto Sans JP',sans-serif;font-size:13px;border-radius:4px;outline:none;width:100%}
+select:focus,input:focus{border-color:var(--accent)}
+input::placeholder{color:var(--muted)}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:9px 20px;font-size:13px;font-weight:600;border-radius:4px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.btn:hover{opacity:.84}
+.main{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 250px)}
+@media(max-width:768px){.main{grid-template-columns:1fr}.sidebar{display:none}}
+.sidebar{border-right:1px solid var(--border);overflow-y:auto}
+.sec-lbl{padding:10px 14px 5px;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase}
+.kw-item{padding:9px 14px;cursor:pointer;border-bottom:1px solid rgba(42,42,53,.4);font-size:12px;color:var(--muted);transition:all .15s}
+.kw-item:hover{background:var(--surface2);color:var(--accent)}
+.center{overflow-y:auto;padding:20px}
+.hanrei-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;transition:border-color .2s}
+.hanrei-card:hover{border-color:var(--accent)}
+.hc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:10px}
+.hc-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:600;color:var(--text);line-height:1.5;flex:1}
+.hc-type{font-size:10px;padding:2px 8px;border-radius:3px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.hc-meta{font-size:11px;color:var(--muted);margin-bottom:8px;display:flex;flex-wrap:wrap;gap:10px}
+.hc-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.hc-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--accent2);text-decoration:none;border:1px solid rgba(126,184,201,.3);padding:5px 12px;border-radius:4px;transition:all .2s}
+.hc-link:hover{background:rgba(126,184,201,.1)}
+.state{padding:40px 20px;text-align:center}
+.state-icon{font-size:36px;margin-bottom:12px;opacity:.4}
+.state-txt{font-size:13px;color:var(--muted);line-height:1.8}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px;text-align:center}
+footer a{color:var(--accent2);text-decoration:none;margin:0 8px;font-size:11px}
+footer p{font-size:11px;color:var(--muted);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div style="background:rgba(200,169,110,.06);border:1px solid rgba(200,169,110,.25);border-left:3px solid #c8a96e;padding:14px 18px;font-size:11px;color:#7a7870;line-height:1.9"><strong style="color:#c8a96e">【重要・免責事項】</strong> 判例マップは、裁判所（courts.go.jp）の<strong style="color:#e8e6e0">公式裁判例検索システムへのリンクを提供する</strong>情報ポータルです。判例データは裁判所が管理する一次情報です。本サービスは中立であり特定の立場を支持・批判しません。本情報は参考目的のみであり法的アドバイスではありません。本サービスは裁判所・政府機関とは一切関係のない<strong style="color:#e8e6e0">民間情報ポータル</strong>です。</div>
+<header>
+  <a href="../" class="back">← まとマップTOP</a>
+  <div class="logo">📋 判例マップ</div>
+  <div style="font-size:10px;color:var(--muted)">データ：裁判所公式</div>
+</header>
+<div style="background:rgba(200,169,110,.06);border:1px solid rgba(200,169,110,.25);border-left:3px solid rgba(200,169,110,1);padding:12px 18px"><p style="font-size:11px;color:#7a7870;line-height:1.9"><strong style="color:rgba(200,169,110,1)">【重要・免責事項】</strong> 判例マップは、裁判所（courts.go.jp）等の<strong style="color:#e8e6e0">公式機関が公開する情報へのリンクのみ</strong>を提供します。特定の個人・団体への誹謗中傷の意図は一切なく、政治的中立を厳守します。本情報は参考目的のみで法的・税務アドバイスではありません。本サービスは裁判所（courts.go.jp）・政府機関とは無関係の民間サービスです。</p></div>
+<div class="hero">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+    <span style="background:rgba(200,169,110,.15);color:var(--accent);border:1px solid rgba(200,169,110,.3);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600">📋 判例マップ</span>
+    <span style="font-size:10px;color:var(--muted)">データソース：裁判所（courts.go.jp）裁判例検索システム</span>
+  </div>
+  <h1>最高裁・高裁・地裁の判例をキーワード検索</h1>
+  <p class="hero-desc">事件名・キーワード・裁判所名・年月日・法令名で判例を絞り込み検索できます。最高裁判例から下級審判例まで、裁判所公式の裁判例検索システムへ直接リンクします。</p>
+  <div class="info-box">
+    <strong style="color:var(--accent)">⚠️ このサービスについて</strong><br>
+    検索ボタンを押すと<strong style="color:var(--text)">裁判所公式の裁判例検索システム（courts.go.jp）</strong>が新しいタブで開きます。判例データは裁判所が直接管理・提供する一次情報です。
+  </div>
+</div>
+
+<div class="search-area">
+  <div class="search-row">
+    <div class="inp-g" style="flex:3">
+      <span class="inp-label">KEYWORD — キーワード・事件名・法令名</span>
+      <input id="kwInp" placeholder="例：不当解雇　個人情報　著作権侵害　名誉毀損" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <div class="inp-g">
+      <span class="inp-label">COURT — 裁判所</span>
+      <select id="courtSel">
+        <option value="">すべての裁判所</option>
+        <option value="1">最高裁判所</option>
+        <option value="2">高等裁判所</option>
+        <option value="3">地方裁判所</option>
+        <option value="4">家庭裁判所</option>
+        <option value="5">簡易裁判所</option>
+      </select>
+    </div>
+    <div class="inp-g">
+      <span class="inp-label">CATEGORY — 分野</span>
+      <select id="catSel">
+        <option value="">すべての分野</option>
+        <option value="民事">民事</option>
+        <option value="刑事">刑事</option>
+        <option value="行政">行政</option>
+        <option value="労働">労働</option>
+        <option value="知財">知的財産</option>
+        <option value="家事">家事</option>
+      </select>
+    </div>
+    <button class="btn" onclick="doSearch()">判例を検索</button>
+  </div>
+  <div style="font-size:10px;color:var(--muted)">💡 検索すると裁判所公式の裁判例検索システムが新しいタブで開きます</div>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sec-lbl">よく検索されるキーワード</div>
+    <div id="kwList"></div>
+    <div class="sec-lbl" style="margin-top:8px">分野別リンク</div>
+    <div id="catList"></div>
+  </div>
+  <div class="center" id="center">
+    <div class="state">
+      <div class="state-icon">📋</div>
+      <div class="state-txt">キーワード・裁判所・分野を選択して検索してください。<br><br>
+      <small style="font-size:10px">データソース：裁判所公式 裁判例検索システム<br>courts.go.jp/app/hanrei_jp/search2</small></div>
+    </div>
+    <!-- 主要判例カテゴリの案内 -->
+    <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
+      <a href="https://www.courts.go.jp/app/hanrei_jp/search2?page=1&courtName=&hanreiSyurui=1" target="_blank" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;transition:border-color .2s;display:block" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:16px;margin-bottom:6px">⚖️</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">最高裁判所判例</div>
+        <div style="font-size:11px;color:var(--muted)">公式裁判例検索で見る ↗</div>
+      </a>
+      <a href="https://www.courts.go.jp/app/hanrei_jp/search2?page=1&courtName=&hanreiSyurui=3" target="_blank" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;transition:border-color .2s;display:block" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:16px;margin-bottom:6px">🏛</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">行政事件判例</div>
+        <div style="font-size:11px;color:var(--muted)">公式裁判例検索で見る ↗</div>
+      </a>
+      <a href="https://www.courts.go.jp/app/hanrei_jp/search2?page=1&courtName=&hanreiSyurui=4" target="_blank" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;transition:border-color .2s;display:block" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:16px;margin-bottom:6px">💼</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">労働事件判例</div>
+        <div style="font-size:11px;color:var(--muted)">公式裁判例検索で見る ↗</div>
+      </a>
+      <a href="https://www.courts.go.jp/app/hanrei_jp/search2?page=1&courtName=&hanreiSyurui=6" target="_blank" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;text-decoration:none;transition:border-color .2s;display:block" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:16px;margin-bottom:6px">💡</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">知的財産判例</div>
+        <div style="font-size:11px;color:var(--muted)">公式裁判例検索で見る ↗</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 まとマップ — 判例マップ</p>
+  <a href="../">まとマップTOP</a>
+  <a href="https://www.courts.go.jp/app/hanrei_jp/search2" target="_blank">裁判所 裁判例検索 ↗</a>
+</footer>
+
+<script>
+const KEYWORDS = ['不当解雇','個人情報漏洩','著作権侵害','名誉毀損','交通事故','相続','離婚','パワハラ','セクハラ','医療過誤','欠陥製品','消費者契約','土地境界','賃料不払','業務上過失'];
+const CATS = [
+  {name:'民事判例', code:'2', icon:'⚖️'},
+  {name:'刑事判例', code:'5', icon:'🔒'},
+  {name:'行政判例', code:'3', icon:'🏛'},
+  {name:'労働判例', code:'4', icon:'💼'},
+  {name:'知財判例', code:'6', icon:'💡'},
+  {name:'家事判例', code:'7', icon:'👨‍👩‍👧'},
+];
+
+document.getElementById('kwList').innerHTML = KEYWORDS.map(k=>
+  `<div class="kw-item" onclick="searchKw('${k}')">${k}</div>`
+).join('');
+
+document.getElementById('catList').innerHTML = CATS.map(c=>
+  `<a href="https://www.courts.go.jp/app/hanrei_jp/search2?page=1&hanreiSyurui=${c.code}" target="_blank" class="kw-item" style="display:flex;align-items:center;gap:6px;text-decoration:none">
+    <span>${c.icon}</span><span>${c.name}</span>
+  </a>`
+).join('');
+
+function searchKw(kw){
+  document.getElementById('kwInp').value = kw;
+  doSearch();
+}
+
+function doSearch(){
+  const kw    = document.getElementById('kwInp').value.trim();
+  const court = document.getElementById('courtSel').value;
+  const cat   = document.getElementById('catSel').value;
+
+  if(!kw && !court && !cat){
+    alert('キーワード・裁判所・分野のいずれかを入力してください');
+    return;
+  }
+
+  // 裁判所公式の裁判例検索へ
+  const params = new URLSearchParams({page:'1'});
+  if(kw) params.set('searchWord', kw);
+  if(court) params.set('hanreiSyurui', court);
+
+  const url = `https://www.courts.go.jp/app/hanrei_jp/search2?${params.toString()}`;
+  window.open(url, '_blank');
+}
+</script>
+</body>
+</html>
