@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>検察官マップ — 全国の検察庁・検察官情報を検索 | まとマップ</title>
+<meta name="description" content="全国の検察庁（高等検察庁・地方検察庁・区検察庁）を都道府県・地域から検索。所在地・管轄・連絡先を一覧表示し、検察庁公式サイトへ直接リンク。">
+<meta name="keywords" content="検察官,検察庁,高等検察庁,地方検察庁,区検察庁,検索,全国,所在地,管轄">
+<link rel="canonical" href="https://matomap.github.io/kensatsu/">
+<meta property="og:title" content="検察官マップ — 全国の検察庁・検察官情報を検索">
+<meta property="og:type" content="website">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0d0d0f;--surface:#141418;--surface2:#1c1c22;--border:#2a2a35;--accent:#7eb8c9;--accent2:#c8a96e;--text:#e8e6e0;--muted:#7a7870;--green:#5ea87a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh}
+header{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.back{font-size:11px;color:var(--muted);text-decoration:none}.back:hover{color:var(--accent)}
+.logo{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--accent)}
+.hero{background:linear-gradient(135deg,#0d1a1a 0%,#0d0d0f 100%);border-bottom:1px solid var(--border);padding:32px 20px}
+h1{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;color:var(--text);margin:10px 0 8px}
+.hero-desc{font-size:13px;color:var(--muted);line-height:1.9;max-width:620px}
+.info-box{background:rgba(126,184,201,.08);border:1px solid rgba(126,184,201,.2);border-radius:6px;padding:12px 16px;margin-top:14px;font-size:11px;color:var(--muted);line-height:1.8}
+.search-area{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 20px}
+.search-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.inp-g{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.inp-label{font-size:10px;color:var(--muted)}
+select,input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 12px;font-family:'Noto Sans JP',sans-serif;font-size:13px;border-radius:4px;outline:none;width:100%}
+select:focus,input:focus{border-color:var(--accent)}
+input::placeholder{color:var(--muted)}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:9px 20px;font-size:13px;font-weight:600;border-radius:4px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.btn:hover{opacity:.84}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:20px}
+.kcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;transition:border-color .2s}
+.kcard:hover{border-color:var(--accent)}
+.kc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.kc-name{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--text)}
+.kc-type{font-size:10px;padding:2px 8px;border-radius:3px;font-weight:600;white-space:nowrap}
+.kc-addr{font-size:12px;color:var(--muted);margin-bottom:8px}
+.kc-region{font-size:11px;color:var(--muted);margin-bottom:10px}
+.kc-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--accent);text-decoration:none;border:1px solid rgba(126,184,201,.3);padding:5px 12px;border-radius:4px;transition:all .2s}
+.kc-link:hover{background:rgba(126,184,201,.1)}
+.state{padding:40px 20px;text-align:center}
+.state-icon{font-size:36px;margin-bottom:12px;opacity:.4}
+.state-txt{font-size:13px;color:var(--muted);line-height:1.8}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px;text-align:center}
+footer a{color:var(--accent2);text-decoration:none;margin:0 8px;font-size:11px}
+footer p{font-size:11px;color:var(--muted);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div style="background:rgba(126,184,201,.06);border:1px solid rgba(126,184,201,.25);border-left:3px solid #7eb8c9;padding:14px 18px;font-size:11px;color:#7a7870;line-height:1.9"><strong style="color:#7eb8c9">【重要・免責事項】</strong> 検察官マップは、検察庁（kensatsu.go.jp）の<strong style="color:#e8e6e0">公式サイトが公開する情報へのリンクを提供する</strong>情報ポータルです。特定の検察官・検察庁を批判・誹謗中傷する意図は一切ありません。本サービスは検察庁・政府機関とは一切関係のない<strong style="color:#e8e6e0">民間情報ポータル</strong>です。掲載情報は参考目的のみです。</div>
+<header>
+  <a href="../" class="back">← まとマップTOP</a>
+  <div class="logo">🔍 検察官マップ</div>
+  <div style="font-size:10px;color:var(--muted)">データ：検察庁公式</div>
+</header>
+<div style="background:rgba(126,184,201,.06);border:1px solid rgba(126,184,201,.25);border-left:3px solid rgba(126,184,201,1);padding:12px 18px"><p style="font-size:11px;color:#7a7870;line-height:1.9"><strong style="color:rgba(126,184,201,1)">【重要・免責事項】</strong> 検察官マップは、検察庁（kensatsu.go.jp）等の<strong style="color:#e8e6e0">公式機関が公開する情報へのリンクのみ</strong>を提供します。特定の個人・団体への誹謗中傷の意図は一切なく、政治的中立を厳守します。本情報は参考目的のみで法的・税務アドバイスではありません。本サービスは検察庁（kensatsu.go.jp）・政府機関とは無関係の民間サービスです。</p></div>
+<div class="hero">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+    <span style="background:rgba(126,184,201,.15);color:var(--accent);border:1px solid rgba(126,184,201,.3);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600">🔍 検察官マップ</span>
+    <span style="font-size:10px;color:var(--muted)">データソース：検察庁（kensatsu.go.jp）公式サイト</span>
+  </div>
+  <h1>全国の検察庁・検察官情報を検索</h1>
+  <p class="hero-desc">高等検察庁・地方検察庁・区検察庁を都道府県・地域から検索できます。各検察庁の所在地・管轄・連絡先を一覧表示し、検察庁公式サイトへ直接リンクします。</p>
+  <div class="info-box">
+    <strong style="color:var(--accent)">⚠️ このサービスについて</strong><br>
+    検察官の個人情報（氏名・担当案件等）は公開されていません。本サービスは<strong style="color:var(--text)">検察庁の所在地・管轄・公式サイトへのリンク</strong>を提供します。
+  </div>
+</div>
+
+<div class="search-area">
+  <div class="search-row">
+    <div class="inp-g">
+      <span class="inp-label">REGION — 地域・都道府県</span>
+      <select id="regionSel" onchange="doSearch()">
+        <option value="">全国（すべて）</option>
+        <option value="北海道">北海道</option>
+        <option value="東北">東北</option>
+        <option value="関東">関東</option>
+        <option value="中部">中部</option>
+        <option value="近畿">近畿</option>
+        <option value="中国">中国</option>
+        <option value="四国">四国</option>
+        <option value="九州">九州・沖縄</option>
+      </select>
+    </div>
+    <div class="inp-g">
+      <span class="inp-label">TYPE — 種別</span>
+      <select id="typeSel" onchange="doSearch()">
+        <option value="">すべての種別</option>
+        <option value="高等検察庁">高等検察庁</option>
+        <option value="地方検察庁">地方検察庁</option>
+        <option value="区検察庁">区検察庁</option>
+      </select>
+    </div>
+    <div class="inp-g" style="flex:2">
+      <span class="inp-label">NAME — 検察庁名</span>
+      <input id="nameInp" placeholder="例：東京地方検察庁　大阪" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <button class="btn" onclick="doSearch()">検索</button>
+  </div>
+</div>
+
+<div id="center">
+  <div class="state">
+    <div class="state-icon">🔍</div>
+    <div class="state-txt">地域・種別を選択するか、検察庁名を入力して検索してください。</div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 まとマップ — 検察官マップ</p>
+  <a href="../">まとマップTOP</a>
+  <a href="https://www.kensatsu.go.jp/" target="_blank">検察庁公式サイト ↗</a>
+</footer>
+
+<script>
+const KENSATSU = [
+  {name:'最高検察庁', type:'高等検察庁', region:'関東', addr:'東京都千代田区霞が関1-1-1', tel:'03-3592-5611', url:'https://www.kensatsu.go.jp/kakuchou/supreme/supreme.shtml'},
+  {name:'東京高等検察庁', type:'高等検察庁', region:'関東', addr:'東京都千代田区霞が関1-1-1', tel:'03-3592-5611', url:'https://www.kensatsu.go.jp/kakuchou/tokyo_h/tokyo_h.shtml'},
+  {name:'大阪高等検察庁', type:'高等検察庁', region:'近畿', addr:'大阪府大阪市北区西天満2-1-10', tel:'06-6364-9920', url:'https://www.kensatsu.go.jp/kakuchou/osaka_h/osaka_h.shtml'},
+  {name:'名古屋高等検察庁', type:'高等検察庁', region:'中部', addr:'愛知県名古屋市中区三の丸2-4-1', tel:'052-951-2421', url:'https://www.kensatsu.go.jp/kakuchou/nagoya_h/nagoya_h.shtml'},
+  {name:'広島高等検察庁', type:'高等検察庁', region:'中国', addr:'広島県広島市中区上八丁堀2-43', tel:'082-228-0431', url:'https://www.kensatsu.go.jp/kakuchou/hiroshima_h/hiroshima_h.shtml'},
+  {name:'福岡高等検察庁', type:'高等検察庁', region:'九州', addr:'福岡県福岡市中央区城内1-1', tel:'092-781-4881', url:'https://www.kensatsu.go.jp/kakuchou/fukuoka_h/fukuoka_h.shtml'},
+  {name:'仙台高等検察庁', type:'高等検察庁', region:'東北', addr:'宮城県仙台市青葉区片平1-6-1', tel:'022-222-6111', url:'https://www.kensatsu.go.jp/kakuchou/sendai_h/sendai_h.shtml'},
+  {name:'札幌高等検察庁', type:'高等検察庁', region:'北海道', addr:'北海道札幌市中央区大通西12', tel:'011-261-1221', url:'https://www.kensatsu.go.jp/kakuchou/sapporo_h/sapporo_h.shtml'},
+  {name:'東京地方検察庁', type:'地方検察庁', region:'関東', addr:'東京都千代田区霞が関1-1-1', tel:'03-3592-5611', url:'https://www.kensatsu.go.jp/kakuchou/tokyo/tokyo.shtml'},
+  {name:'大阪地方検察庁', type:'地方検察庁', region:'近畿', addr:'大阪府大阪市北区西天満2-1-10', tel:'06-6364-9920', url:'https://www.kensatsu.go.jp/kakuchou/osaka/osaka.shtml'},
+  {name:'名古屋地方検察庁', type:'地方検察庁', region:'中部', addr:'愛知県名古屋市中区三の丸2-4-1', tel:'052-951-2421', url:'https://www.kensatsu.go.jp/kakuchou/nagoya/nagoya.shtml'},
+  {name:'横浜地方検察庁', type:'地方検察庁', region:'関東', addr:'神奈川県横浜市中区寿町1-2', tel:'045-661-0221', url:'https://www.kensatsu.go.jp/kakuchou/yokohama/yokohama.shtml'},
+  {name:'さいたま地方検察庁', type:'地方検察庁', region:'関東', addr:'埼玉県さいたま市浦和区高砂3-16-58', tel:'048-863-1271', url:'https://www.kensatsu.go.jp/kakuchou/saitama/saitama.shtml'},
+  {name:'千葉地方検察庁', type:'地方検察庁', region:'関東', addr:'千葉県千葉市中央区中央4-11-1', tel:'043-225-3181', url:'https://www.kensatsu.go.jp/kakuchou/chiba/chiba.shtml'},
+  {name:'京都地方検察庁', type:'地方検察庁', region:'近畿', addr:'京都府京都市中京区菊屋町', tel:'075-231-2900', url:'https://www.kensatsu.go.jp/kakuchou/kyoto/kyoto.shtml'},
+  {name:'神戸地方検察庁', type:'地方検察庁', region:'近畿', addr:'兵庫県神戸市中央区橘通2-4-1', tel:'078-341-4261', url:'https://www.kensatsu.go.jp/kakuchou/kobe/kobe.shtml'},
+  {name:'福岡地方検察庁', type:'地方検察庁', region:'九州', addr:'福岡県福岡市中央区城内1-1', tel:'092-781-4881', url:'https://www.kensatsu.go.jp/kakuchou/fukuoka/fukuoka.shtml'},
+  {name:'札幌地方検察庁', type:'地方検察庁', region:'北海道', addr:'北海道札幌市中央区大通西12', tel:'011-261-1221', url:'https://www.kensatsu.go.jp/kakuchou/sapporo/sapporo.shtml'},
+  {name:'仙台地方検察庁', type:'地方検察庁', region:'東北', addr:'宮城県仙台市青葉区片平1-6-1', tel:'022-222-6111', url:'https://www.kensatsu.go.jp/kakuchou/sendai/sendai.shtml'},
+  {name:'広島地方検察庁', type:'地方検察庁', region:'中国', addr:'広島県広島市中区上八丁堀2-43', tel:'082-228-0431', url:'https://www.kensatsu.go.jp/kakuchou/hiroshima/hiroshima.shtml'},
+  {name:'那覇地方検察庁', type:'地方検察庁', region:'九州', addr:'沖縄県那覇市樋川1-14-1', tel:'098-863-0431', url:'https://www.kensatsu.go.jp/kakuchou/naha/naha.shtml'},
+];
+const TYPE_COLORS = {'高等検察庁':'#9b7ec9','地方検察庁':'#7eb8c9','区検察庁':'#5ea87a'};
+
+function doSearch(){
+  const region = document.getElementById('regionSel').value;
+  const type   = document.getElementById('typeSel').value;
+  const name   = document.getElementById('nameInp').value.trim();
+  const filtered = KENSATSU.filter(k=>{
+    return (!region||k.region===region) && (!type||k.type===type) && (!name||k.name.includes(name));
+  });
+  const center = document.getElementById('center');
+  if(!filtered.length){
+    center.innerHTML=`<div class="state"><div class="state-icon">🔍</div><div class="state-txt">該当する検察庁が見つかりませんでした。</div></div>`;
+    return;
+  }
+  center.innerHTML=`<div class="grid">${filtered.map(k=>`
+  <div class="kcard">
+    <div class="kc-top">
+      <div class="kc-name">${k.name}</div>
+      <span class="kc-type" style="background:${TYPE_COLORS[k.type]||'#7a7870'}22;color:${TYPE_COLORS[k.type]||'#7a7870'};border:1px solid ${TYPE_COLORS[k.type]||'#7a7870'}44">${k.type}</span>
+    </div>
+    <div class="kc-addr">📍 ${k.addr}</div>
+    <div class="kc-region">☎️ ${k.tel}</div>
+    <a href="${k.url}" target="_blank" class="kc-link">検察庁公式サイトへ ↗</a>
+  </div>`).join('')}</div>`;
+}
+
+doSearch();
+</script>
+</body>
+</html>
