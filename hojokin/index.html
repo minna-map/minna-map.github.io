@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>補助金マップ — 都道府県別・対象者別に補助金・助成金を検索 | まとマップ</title>
+<meta name="description" content="国・都道府県・市区町村の補助金・助成金・給付金を都道府県別・対象者別で検索。中小企業・個人事業主・子育て・農業・創業など幅広くカバー。経済産業省・各自治体公式サイトへ直接リンク。">
+<meta name="keywords" content="補助金,助成金,給付金,都道府県,中小企業,個人事業主,子育て,農業,創業,申請,検索">
+<link rel="canonical" href="https://matomap.github.io/hojokin/">
+<meta property="og:title" content="補助金マップ — 都道府県別・対象者別に補助金・助成金を検索">
+<meta property="og:type" content="website">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0d0d0f;--surface:#141418;--surface2:#1c1c22;--border:#2a2a35;--accent:#5ea87a;--accent2:#c8a96e;--text:#e8e6e0;--muted:#7a7870}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh}
+header{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.back{font-size:11px;color:var(--muted);text-decoration:none}.back:hover{color:var(--accent)}
+.logo{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;color:var(--accent)}
+.hero{background:linear-gradient(135deg,#0d1a0d 0%,#0d0d0f 100%);border-bottom:1px solid var(--border);padding:32px 20px}
+h1{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;color:var(--text);margin:10px 0 8px}
+.hero-desc{font-size:13px;color:var(--muted);line-height:1.9;max-width:620px}
+.search-area{background:var(--surface2);border-bottom:1px solid var(--border);padding:14px 20px}
+.search-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.inp-g{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.inp-label{font-size:10px;color:var(--muted)}
+select,input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 12px;font-family:'Noto Sans JP',sans-serif;font-size:13px;border-radius:4px;outline:none;width:100%}
+select:focus,input:focus{border-color:var(--accent)}
+input::placeholder{color:var(--muted)}
+.btn{background:var(--accent);color:var(--bg);border:none;padding:9px 20px;font-size:13px;font-weight:600;border-radius:4px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.btn:hover{opacity:.84}
+.hint{font-size:10px;color:var(--muted);margin-top:6px}
+
+.section{padding:20px;max-width:1100px;margin:0 auto}
+.sec-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.portal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:28px}
+.portal-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-decoration:none;transition:border-color .2s,background .15s;display:block}
+.portal-card:hover{border-color:var(--accent);background:var(--surface2)}
+.pc-icon{font-size:28px;margin-bottom:8px}
+.pc-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.pc-desc{font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:8px}
+.pc-source{font-size:10px;color:var(--accent);display:flex;align-items:center;gap:4px}
+.pc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.pc-tag{font-size:9px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:20px}
+
+.pref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.pref-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center;text-decoration:none;transition:border-color .2s;display:block}
+.pref-card:hover{border-color:var(--accent)}
+.pref-name{font-size:12px;color:var(--text);margin-bottom:2px}
+.pref-link{font-size:10px;color:var(--muted)}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px;text-align:center;margin-top:20px}
+footer a{color:var(--accent2);text-decoration:none;margin:0 8px;font-size:11px}
+footer p{font-size:11px;color:var(--muted);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div style="background:rgba(94,168,122,.06);border:1px solid rgba(94,168,122,.25);border-left:3px solid #5ea87a;padding:14px 18px;font-size:11px;color:#7a7870;line-height:1.9"><strong style="color:#5ea87a">【重要・免責事項】</strong> 補助金マップは、経済産業省・各自治体等の<strong style="color:#e8e6e0">公式サイトが公開する補助金情報へのリンクを提供する</strong>情報ポータルです。補助金の採択・支給を保証するものではありません。最新の申請要件は必ず各公式サイトでご確認ください。本サービスは政府機関・自治体とは一切関係のない<strong style="color:#e8e6e0">民間情報ポータル</strong>です。</div>
+<header>
+  <a href="../" class="back">← まとマップTOP</a>
+  <div class="logo">💰 補助金マップ</div>
+  <div style="font-size:10px;color:var(--muted)">データ：各省庁・自治体公式</div>
+</header>
+<div style="background:rgba(94,168,122,.06);border:1px solid rgba(94,168,122,.25);border-left:3px solid rgba(94,168,122,1);padding:12px 18px"><p style="font-size:11px;color:#7a7870;line-height:1.9"><strong style="color:rgba(94,168,122,1)">【重要・免責事項】</strong> 補助金マップは、経済産業省・各自治体等の<strong style="color:#e8e6e0">公式機関が公開する情報へのリンクのみ</strong>を提供します。特定の個人・団体への誹謗中傷の意図は一切なく、政治的中立を厳守します。本情報は参考目的のみで法的・税務アドバイスではありません。本サービスは経済産業省・各自治体・政府機関とは無関係の民間サービスです。</p></div>
+<div class="hero">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+    <span style="background:rgba(94,168,122,.15);color:var(--accent);border:1px solid rgba(94,168,122,.3);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600">💰 補助金マップ</span>
+    <span style="font-size:10px;color:var(--muted)">データソース：経済産業省・各自治体公式サイト</span>
+  </div>
+  <h1>都道府県別・対象者別に補助金・助成金を検索</h1>
+  <p class="hero-desc">国・都道府県・市区町村の補助金・助成金・給付金を対象者別・目的別に整理。各補助金の申請ページへ直接リンクします。</p>
+</div>
+
+<div class="search-area">
+  <div class="search-row">
+    <div class="inp-g">
+      <span class="inp-label">REGION — 都道府県</span>
+      <select id="prefSel">
+        <option value="">全国（国の補助金含む）</option>
+        <option value="北海道">北海道</option><option value="青森県">青森県</option><option value="岩手県">岩手県</option>
+        <option value="宮城県">宮城県</option><option value="秋田県">秋田県</option><option value="山形県">山形県</option>
+        <option value="福島県">福島県</option><option value="茨城県">茨城県</option><option value="栃木県">栃木県</option>
+        <option value="群馬県">群馬県</option><option value="埼玉県">埼玉県</option><option value="千葉県">千葉県</option>
+        <option value="東京都">東京都</option><option value="神奈川県">神奈川県</option><option value="新潟県">新潟県</option>
+        <option value="富山県">富山県</option><option value="石川県">石川県</option><option value="福井県">福井県</option>
+        <option value="山梨県">山梨県</option><option value="長野県">長野県</option><option value="岐阜県">岐阜県</option>
+        <option value="静岡県">静岡県</option><option value="愛知県">愛知県</option><option value="三重県">三重県</option>
+        <option value="滋賀県">滋賀県</option><option value="京都府">京都府</option><option value="大阪府">大阪府</option>
+        <option value="兵庫県">兵庫県</option><option value="奈良県">奈良県</option><option value="和歌山県">和歌山県</option>
+        <option value="鳥取県">鳥取県</option><option value="島根県">島根県</option><option value="岡山県">岡山県</option>
+        <option value="広島県">広島県</option><option value="山口県">山口県</option><option value="徳島県">徳島県</option>
+        <option value="香川県">香川県</option><option value="愛媛県">愛媛県</option><option value="高知県">高知県</option>
+        <option value="福岡県">福岡県</option><option value="佐賀県">佐賀県</option><option value="長崎県">長崎県</option>
+        <option value="熊本県">熊本県</option><option value="大分県">大分県</option><option value="宮崎県">宮崎県</option>
+        <option value="鹿児島県">鹿児島県</option><option value="沖縄県">沖縄県</option>
+      </select>
+    </div>
+    <div class="inp-g">
+      <span class="inp-label">TARGET — 対象者</span>
+      <select id="targetSel">
+        <option value="">すべての対象者</option>
+        <option value="中小企業">中小企業・法人</option>
+        <option value="個人事業主">個人事業主・フリーランス</option>
+        <option value="創業">創業・起業予定者</option>
+        <option value="農業">農業者・農業法人</option>
+        <option value="子育て">子育て世帯・個人</option>
+        <option value="高齢者">高齢者・介護</option>
+        <option value="住宅">住宅取得・リフォーム</option>
+        <option value="省エネ">省エネ・再生可能エネルギー</option>
+      </select>
+    </div>
+    <div class="inp-g" style="flex:2">
+      <span class="inp-label">KEYWORD — キーワード</span>
+      <input id="kwInp" placeholder="例：IT導入　設備投資　雇用　持続化" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <button class="btn" onclick="doSearch()">検索</button>
+  </div>
+  <div class="hint">💡 検索すると補助金ポータルサイト（jGrants・J-Net21等）が新しいタブで開きます</div>
+</div>
+
+<div class="section">
+  <!-- 主要補助金ポータル -->
+  <div class="sec-title">主要な補助金ポータルサイト</div>
+  <div class="portal-grid">
+    <a href="https://jgrants.go.jp/" target="_blank" class="portal-card">
+      <div class="pc-icon">🏛</div>
+      <div class="pc-title">jGrants（補助金申請システム）</div>
+      <div class="pc-desc">経済産業省が運営する補助金電子申請システム。ものづくり補助金・持続化補助金・IT導入補助金等の申請はこちら。</div>
+      <div class="pc-source">jgrants.go.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">ものづくり</span><span class="pc-tag">持続化</span><span class="pc-tag">IT導入</span></div>
+    </a>
+    <a href="https://j-net21.smrj.go.jp/snavi/search" target="_blank" class="portal-card">
+      <div class="pc-icon">🔍</div>
+      <div class="pc-title">J-Net21 補助金・助成金検索</div>
+      <div class="pc-desc">中小企業基盤整備機構が運営。国・都道府県・市区町村の補助金・助成金を一括検索できる。地域・対象者・目的で絞り込み可能。</div>
+      <div class="pc-source">j-net21.smrj.go.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">全国対応</span><span class="pc-tag">中小企業</span><span class="pc-tag">地域別</span></div>
+    </a>
+    <a href="https://www.meti.go.jp/main/doingbusiness/subsidies/" target="_blank" class="portal-card">
+      <div class="pc-icon">⚙️</div>
+      <div class="pc-title">経済産業省 補助金一覧</div>
+      <div class="pc-desc">経済産業省が所管する補助金・支援制度の一覧。ものづくり・IT・省エネ・創業支援など幅広いメニュー。</div>
+      <div class="pc-source">meti.go.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">省エネ</span><span class="pc-tag">創業</span><span class="pc-tag">IT</span></div>
+    </a>
+    <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/kyufukin/index.html" target="_blank" class="portal-card">
+      <div class="pc-icon">👷</div>
+      <div class="pc-title">厚生労働省 雇用関係助成金</div>
+      <div class="pc-desc">雇用調整助成金・キャリアアップ助成金・両立支援等助成金など雇用関係の助成金情報。</div>
+      <div class="pc-source">mhlw.go.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">雇用</span><span class="pc-tag">キャリアアップ</span><span class="pc-tag">両立支援</span></div>
+    </a>
+    <a href="https://www.maff.go.jp/j/kobetu_ninaite/n_hojyo/" target="_blank" class="portal-card">
+      <div class="pc-icon">🌾</div>
+      <div class="pc-title">農林水産省 補助金・交付金</div>
+      <div class="pc-desc">農業者・農業法人向けの補助金・交付金情報。経営安定対策・農地整備・スマート農業など。</div>
+      <div class="pc-source">maff.go.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">農業</span><span class="pc-tag">スマート農業</span><span class="pc-tag">農地</span></div>
+    </a>
+    <a href="https://www.mlit.go.jp/jutakukentiku/house/jutakukentiku_house_tk4_000135.html" target="_blank" class="portal-card">
+      <div class="pc-icon">🏠</div>
+      <div class="pc-title">国土交通省 住宅補助金</div>
+      <div class="pc-desc">住宅取得・省エネリフォーム・ZEH（ゼロエネルギーハウス）など住宅関連の補助金情報。</div>
+      <div class="pc-source">mlit.go.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">住宅</span><span class="pc-tag">省エネ</span><span class="pc-tag">ZEH</span></div>
+    </a>
+  </div>
+
+  <!-- 主要補助金（国） -->
+  <div class="sec-title">主要な国の補助金</div>
+  <div class="portal-grid">
+    <a href="https://portal.monodukuri-hojo.jp/" target="_blank" class="portal-card" style="--c:#5ea87a">
+      <div class="pc-icon">🔧</div>
+      <div class="pc-title">ものづくり補助金</div>
+      <div class="pc-desc">中小企業・小規模事業者の設備投資・システム構築を支援。補助上限額750万〜1億円。</div>
+      <div class="pc-source">portal.monodukuri-hojo.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">中小企業</span><span class="pc-tag">設備投資</span><span class="pc-tag">最大1億円</span></div>
+    </a>
+    <a href="https://www.it-hojo.jp/" target="_blank" class="portal-card">
+      <div class="pc-icon">💻</div>
+      <div class="pc-title">IT導入補助金</div>
+      <div class="pc-desc">中小企業・小規模事業者のITツール導入を支援。会計・販売管理・EC構築等。補助率1/2〜3/4。</div>
+      <div class="pc-source">it-hojo.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">IT</span><span class="pc-tag">DX推進</span><span class="pc-tag">クラウド</span></div>
+    </a>
+    <a href="https://www.jizokuka-hojo.jp/" target="_blank" class="portal-card">
+      <div class="pc-icon">🏪</div>
+      <div class="pc-title">小規模事業者持続化補助金</div>
+      <div class="pc-desc">小規模事業者の販路開拓・業務効率化を支援。チラシ・HP作成・展示会出展等が対象。</div>
+      <div class="pc-source">jizokuka-hojo.jp ↗</div>
+      <div class="pc-tags"><span class="pc-tag">小規模事業者</span><span class="pc-tag">販路開拓</span><span class="pc-tag">最大250万円</span></div>
+    </a>
+  </div>
+
+  <!-- 都道府県別 -->
+  <div class="sec-title">都道府県別の補助金を探す</div>
+  <div class="pref-grid" id="prefGrid"></div>
+</div>
+
+<footer>
+  <p>© 2026 まとマップ — 補助金マップ</p>
+  <a href="../">まとマップTOP</a>
+  <a href="https://jgrants.go.jp/" target="_blank">jGrants ↗</a>
+  <a href="https://j-net21.smrj.go.jp/snavi/search" target="_blank">J-Net21 ↗</a>
+</footer>
+
+<script>
+const PREFS = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+
+document.getElementById('prefGrid').innerHTML = PREFS.map(p=>{
+  const query = encodeURIComponent(p + ' 補助金 助成金');
+  const url = `https://j-net21.smrj.go.jp/snavi/search?area=${encodeURIComponent(p)}`;
+  return `<a href="${url}" target="_blank" class="pref-card">
+    <div class="pref-name">${p}</div>
+    <div class="pref-link">補助金を探す ↗</div>
+  </a>`;
+}).join('');
+
+function doSearch(){
+  const pref   = document.getElementById('prefSel').value;
+  const target = document.getElementById('targetSel').value;
+  const kw     = document.getElementById('kwInp').value.trim();
+
+  // J-Net21で検索
+  let url = 'https://j-net21.smrj.go.jp/snavi/search?';
+  const params = [];
+  if(pref) params.push('area=' + encodeURIComponent(pref));
+  if(kw)   params.push('q=' + encodeURIComponent(kw + (target?' '+target:'')));
+  else if(target) params.push('q=' + encodeURIComponent(target));
+  url += params.join('&');
+  window.open(url, '_blank');
+}
+</script>
+</body>
+</html>
